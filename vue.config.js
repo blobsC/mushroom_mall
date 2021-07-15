@@ -1,7 +1,7 @@
 /*
  * @author: 陈大帅
  * @Date: 2021-07-13 15:28:57
- * @LastEditTime: 2021-07-13 15:39:58
+ * @LastEditTime: 2021-07-14 01:14:31
  * @FilePath: \supermall\mushroom_mall\vue.config.js
  */
 module.exports = {
@@ -12,7 +12,9 @@ module.exports = {
         components: "@/components", 
         common: "@/common",
         network: "@/network",
-        views: "@/views"   
+        views: "@/views" ,
+        network: "@/network"
+
       }
     }
   }
