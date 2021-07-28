@@ -1,7 +1,7 @@
 <!--
  * @author: 陈大帅
  * @Date: 2021-07-14 16:34:42
- * @LastEditTime: 2021-07-14 17:14:29
+ * @LastEditTime: 2021-07-28 04:13:02
  * @FilePath: \supermall\mushroom_mall\src\components\content\tabControl\TabControl.vue
 -->
 @<template>
@@ -33,13 +33,14 @@ export default {
   methods: {
     itemClick(index) {
       this.currentIndex = index
+      this.$emit('tabClick',index)
     }
   },
 }
 
 </script>
 
-<style>
+<style scoped>
   .tab-control {
     display: flex;
     text-align: center;

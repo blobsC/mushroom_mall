@@ -1,17 +1,19 @@
 <!--
  * @author: 陈大帅
  * @Date: 2021-07-15 22:45:00
- * @LastEditTime: 2021-07-15 23:46:28
+ * @LastEditTime: 2021-07-28 18:43:50
  * @FilePath: \supermall\mushroom_mall\src\components\content\goods\GoodsListItem.vue
 -->
 @<template>
   <div class="goods-item">
+    <a :href="goodsItem.link">
     <img :src="goodsItem.show.img" alt="">
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>   
       <span class="price">{{goodsItem.price}}</span>
       <span class="collect">{{goodsItem.cfav}}</span>
     </div>
+    </a>
   </div>
 </template>
 
@@ -30,7 +32,7 @@ export default {
 
 </script>
 
-<style>
+<style scoped>
 
 .goods-item {
     padding-bottom: 40px;

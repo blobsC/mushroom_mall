@@ -1,7 +1,7 @@
 <!--
  * @author: 陈大帅
  * @Date: 2021-07-13 22:30:43
- * @LastEditTime: 2021-07-14 02:23:48
+ * @LastEditTime: 2021-07-28 04:11:54
  * @FilePath: \supermall\mushroom_mall\src\components\common\navbar\NavBar.vue
 -->
 @<template>
@@ -18,7 +18,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
   .nav-bar {
     display: flex;
     height: 44px;

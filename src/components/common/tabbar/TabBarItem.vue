@@ -1,7 +1,7 @@
 <!--
  * @author: 陈大帅
  * @Date: 2021-07-06 17:27:42
- * @LastEditTime: 2021-07-13 23:10:22
+ * @LastEditTime: 2021-07-28 04:12:30
  * @FilePath: \supermall\mushroom_mall\src\components\common\tabbar\TabBarItem.vue
 -->
 @<template>
@@ -42,7 +42,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
   
   .tab-bar-item {
   flex: 1;

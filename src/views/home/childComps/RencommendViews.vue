@@ -1,7 +1,7 @@
 <!--
  * @author: 陈大帅
  * @Date: 2021-07-14 14:00:12
- * @LastEditTime: 2021-07-14 14:24:39
+ * @LastEditTime: 2021-07-28 04:11:36
  * @FilePath: \supermall\mushroom_mall\src\views\home\childComps\RencommendViews.vue
 -->
 @<template>
@@ -28,7 +28,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
   .recommend {
     display: flex;
     width: 100%;
