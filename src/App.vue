@@ -1,12 +1,14 @@
 <!--
  * @author: 陈大帅
  * @Date: 2021-07-13 14:36:40
- * @LastEditTime: 2021-07-16 00:23:39
+ * @LastEditTime: 2021-07-30 23:29:49
  * @FilePath: \supermall\mushroom_mall\src\App.vue
 -->
 <template>
   <div id="app">
+    <keep-alive exclude="deTail">
     <router-view></router-view>
+    </keep-alive>   
     <main-tab-bar></main-tab-bar>
   </div>
 </template>

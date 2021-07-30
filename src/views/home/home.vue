@@ -1,25 +1,31 @@
 <!--
  * @author: 陈大帅
  * @Date: 2021-07-07 09:38:28
- * @LastEditTime: 2021-07-28 18:38:03
+ * @LastEditTime: 2021-07-30 15:05:26
  * @FilePath: \supermall\mushroom_mall\src\views\home\home.vue
 -->
 @<template>
   <div id="home">
     <nav-bar class="nav-bar"><div slot="center">购物街</div></nav-bar>
+    <tab-control 
+            :titles="['流行', '新款', '精选']"                  
+              @tabClick="tabClick"
+              ref="tabControl2"
+              class="tab-control" 
+              v-show="isTabFixed"></tab-control>
 
     <scroll class="content" ref="scroll" 
             :probeType='3' 
             @scroll="contenScroll"
             :pull-up-load="true"          
             @pullingUp='loadMoer'>    
-      <home-swiper :banner="banner"/>
+      <home-swiper :banner="banner" @swiperImageLoad="swiperImageLoad"/>
       <rencommend-views :recommend="recommend"></rencommend-views>
       <feature-views></feature-views>
       <tab-control 
-                  :titles="['流行', '新款', '精选']"
-                   class="tab-control"
-                   @tabClick="tabClick"></tab-control>
+            :titles="['流行', '新款', '精选']"                  
+              @tabClick="tabClick"
+              ref="tabControl1"></tab-control>
       <goods-list :goods="showGoods"></goods-list>
     </scroll>
 
@@ -42,6 +48,8 @@ import {getHomeMultidata,getHomeGoods} from 'network/home.js'
 
 import scroll from 'components/common/scroll/scroll.vue'
 import BackTop from 'components/content/backTop/BackTop.vue'
+
+import {debounce} from 'components/common/tools/tools.js'
 
 
 export default {
@@ -66,7 +74,11 @@ export default {
         'sell' : {page:0, list: []},
       },
       currentType: 'pop',
-      isShowBackTop : false
+      isShowBackTop : false,
+      tabOffsetTop: 0,
+      isTabFixed: false,
+      saveY: 0
+
     }
   },
   created() {
@@ -76,18 +88,35 @@ export default {
     //2.请求商品数据
     this.getHomeGoods('pop')
     this.getHomeGoods('new')
-    this.getHomeGoods('sell') 
-    
+    this.getHomeGoods('sell')    
+  },
+  mounted() {
+    // 监听图片加载完成 刷新解决better-scroll中得BUG
+    const refresh = debounce(this.$refs.scroll.refresh,50)
+    this.$bus.$on('itemImageLoad',() => {
+        refresh()
+    }) 
   },
   computed: {
+
     showGoods() {
      return this.goods[this.currentType].list
-    }
+    }, 
   },
+  activated() {
+    //让Home保持状态
+    this.$refs.scroll.scrollTo(0,this.saveY,5000)
+    this.$refs.scroll.refresh()
+  },
+  deactivated() {
+    //让Home保持状态 离开时 记录一下scroll.y的位置
+    this.saveY = this.$refs.scroll.getScrollY()
+  },  
   methods: {   
     /**
      * 事件监听的相关方法
      */
+    
     tabClick(index) {
       switch (index) {
         case 0:
@@ -100,6 +129,10 @@ export default {
           this.currentType = 'sell'
           break;
       }
+
+      //让吸顶的tabControl中的点击保持一致
+      this.$refs.tabControl1.currentIndex = index
+      this.$refs.tabControl2.currentIndex = index
     },
     
     //点击回到顶部
@@ -109,18 +142,22 @@ export default {
 
     //内容滚动显示回到顶部按钮
     contenScroll(position) {
-      this.isShowBackTop = Math.abs(position.y) > 1000
+      
+      //判断是否显示BackTop按钮
+      this.isShowBackTop = Math.abs(position.y) > 1000   
+      
+      //决定tabControl是否吸顶
+      this.isTabFixed = Math.abs(position.y) > this.tabOffsetTop
     },
 
     //上拉加载更多数据
     loadMoer() {
       this.getHomeGoods(this.currentType)
+    },
 
-      this.$refs.scroll.scroll.refresh()
-      
-      setTimeout(() => {
-        this.$refs.scroll.finishPullUp()
-      }, 1000);
+    //做吸顶效果 获取tabControl的offsetTop
+    swiperImageLoad() {
+      this.tabOffsetTop = this.$refs.tabControl1.$el.offsetTop     
     },
    
     /**
@@ -136,17 +173,20 @@ export default {
       const page = this.goods[type].page + 1
       getHomeGoods(type,page).then(res => {  
         this.goods[type].list.push(...res.data.data.list)
-        this.goods[type].page += 1   
+        this.goods[type].page += 1  
+        
+        //完成上拉加载更多
+        this.$refs.scroll.finishPullUp()
         
       })
-    }
+    }  
   }
 }
 </script>
 
 <style scoped>
   #home {
-    padding-top: 44px;
+    /* padding-top: 44px; */
     position: relative;
     height: 100vh;
   }
@@ -156,17 +196,11 @@ export default {
     color: #fff;
     font-weight: 666 ;
     
-    position: fixed;
+    /* position: fixed;
     left: 0;
     right: 0;
     top: 0;
-    z-index: 9;
-  }
-
-  .tab-control{
-    position: sticky;
-    top: 44px;
-    z-index:1;
+    z-index: 9; */
   }
 
   .content {
@@ -174,5 +208,10 @@ export default {
     top: 44px;
     bottom: 49px;
     overflow: hidden;
+  }
+
+  .tab-control {
+    position: relative;
+    z-index: 9;
   }
 </style>

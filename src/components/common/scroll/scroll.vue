@@ -1,7 +1,7 @@
 <!--
  * @author: 陈大帅
  * @Date: 2021-07-28 03:31:22
- * @LastEditTime: 2021-07-28 18:28:41
+ * @LastEditTime: 2021-07-30 14:50:37
  * @FilePath: \supermall\mushroom_mall\src\components\common\scroll\scroll.vue
 -->
 @<template>
@@ -41,23 +41,33 @@ export default {
     })
 
     //监听scroll滚动
-    this.scroll.on('scroll',(position) => {
-      this.$emit('scroll',position)     
-    })
+    if(this.probeType === 2 || this.probeType ===3) {
+      this.scroll.on('scroll',(position) => {
+        this.$emit('scroll',position)     
+      })
+    }
 
-    //上拉加载数据
-    this.scroll.on('pullingUp',() => {
-      this.$emit('pullingUp')
-    })
+    //监听上拉加载数据
+    if(this.pullUpLoad) {
+      this.scroll.on('pullingUp',() => {
+        this.$emit('pullingUp')
+      })
+    }
 
   },
   methods: {
     scrollTo(x, y, time=300) {
       //做得是点击回到顶部
-      this.scroll.scrollTo(x, y, time)
+     this.scroll && this.scroll.scrollTo(x, y, time)
     },
     finishPullUp() {
-      this.scroll.finishPullUp()
+     this.scroll && this.scroll.finishPullUp()    
+    },
+    refresh() {
+     this.scroll && this.scroll.refresh()    
+    },
+    getScrollY() {
+      return this.scroll ?  this.scroll.y : 0
     }
   },
 }

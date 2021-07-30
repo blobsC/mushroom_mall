@@ -7,7 +7,7 @@
       </slot>
       <div class="indicator">
         <slot name="indicator" v-if="showIndicator && slideCount>1">
-          <div v-for="(item, index) in slideCount" class="indi-item" :class="{active: index === currentIndex-1}" :key="index"></div>
+          <div v-for="(item, index) in slideCount" class="indi-item" :class="{active: index === currentIndex-1}" :key="item"></div>
         </slot>
       </div>
     </div>
@@ -44,15 +44,27 @@
       }
     },
     mounted: function () {
-      // 1.操作DOM, 在前后添加Slide
-      setTimeout(() => {
-        this.handleDom();
-
-        // 2.开启定时器
-        this.startTimer();
-      }, 100)
+      if(document.querySelector(".swiper").childElementCount == 0) {
+            this.observeSwiper();
+        }else {
+            this.handleDom()
+            this.startTimer()
+        }
     },
-    methods: {
+    methods: {     
+      observeSwiper() {
+        const targetNode = document.querySelector('.swiper');
+        const config = {childList: true};
+        const callback = (mutationsList, observer) => { 
+                this.handleDom();
+                this.startTimer();
+                observer.disconnect();
+          };
+        const observer = new MutationObserver(callback);
+        observer.observe(targetNode, config);
+      },
+
+
 		  /**
        * 定时器操作
        */
@@ -71,7 +83,7 @@
        */
       scrollContent: function (currentPosition) {
         // 0.设置正在滚动
-        this.scrolling = true;
+        this.scrolling = true
 
         // 1.开始滚动动画
         this.swiperStyle.transition ='transform '+ this.animDuration + 'ms';
@@ -82,6 +94,7 @@
 
         // 4.滚动完成
         this.scrolling = false
+  
       },
 
       /**
@@ -240,6 +253,7 @@
   }
 
   .indi-item.active {
-    background-color: rgba(212,62,46,1.0);
+    /* background-color: rgba(212,62,46,1.0); */
+    background-color: #800;
   }
 </style>
