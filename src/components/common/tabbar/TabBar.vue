@@ -1,7 +1,7 @@
 <!--
  * @author: 陈大帅
  * @Date: 2021-07-06 17:08:59
- * @LastEditTime: 2021-07-16 00:24:24
+ * @LastEditTime: 2021-07-31 17:47:49
  * @FilePath: \supermall\mushroom_mall\src\components\common\tabbar\TabBar.vue
 -->
 @<template>
@@ -26,7 +26,7 @@ export default {
   right: 0;
   bottom: 0;
   box-shadow: 0px -1px 1px rgba(100, 100, 100, .2) ;
-  z-index: 9;
+  /* z-index: 9; */
   
 }
 

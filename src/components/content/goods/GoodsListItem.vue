@@ -1,12 +1,12 @@
 <!--
  * @author: 陈大帅
  * @Date: 2021-07-15 22:45:00
- * @LastEditTime: 2021-07-30 16:10:45
+ * @LastEditTime: 2021-08-02 02:36:58
  * @FilePath: \supermall\mushroom_mall\src\components\content\goods\GoodsListItem.vue
 -->
 @<template>
   <div class="goods-item" @click="itemClick">   
-    <img :src="goodsItem.show.img" alt="" @load="imageLoad">
+    <img :src="showImg" alt="" @load="imageLoad">
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>   
       <span class="price">{{goodsItem.price}}</span>
@@ -32,6 +32,11 @@ export default {
       },
     itemClick() {
       this.$router.push('/detail/' + this.goodsItem.iid)
+    }
+  },
+  computed: {
+    showImg() {
+      return this.goodsItem.image ||  this.goodsItem.show.img
     }
   }
 

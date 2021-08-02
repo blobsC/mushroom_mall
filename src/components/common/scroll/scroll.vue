@@ -1,7 +1,7 @@
 <!--
  * @author: 陈大帅
  * @Date: 2021-07-28 03:31:22
- * @LastEditTime: 2021-07-30 14:50:37
+ * @LastEditTime: 2021-08-02 18:42:26
  * @FilePath: \supermall\mushroom_mall\src\components\common\scroll\scroll.vue
 -->
 @<template>
@@ -36,6 +36,7 @@ export default {
     this.scroll = new BScroll(this.$refs.wrapper,{
       click: true,
       observeDOM: true,
+      observeImage: true,
       probeType: this.probeType,
       pullUpLoad: this.pullUpLoad
     })

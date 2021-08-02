@@ -1,7 +1,7 @@
 <!--
  * @author: 陈大帅
  * @Date: 2021-07-30 16:29:47
- * @LastEditTime: 2021-07-30 17:40:09
+ * @LastEditTime: 2021-08-02 22:00:03
  * @FilePath: \supermall\mushroom_mall\src\views\detail\childComps\detailNavBar.vue
 -->
 @<template>
@@ -40,6 +40,7 @@ export default {
   methods: {
     titlesClick(index) {
       this.currentIndex = index
+      this.$emit('navBarClick',index)
     },
     leftClick() {
       this.$router.back()

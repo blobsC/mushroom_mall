@@ -1,7 +1,7 @@
 <!--
  * @author: 陈大帅
  * @Date: 2021-07-07 09:38:28
- * @LastEditTime: 2021-07-30 15:05:26
+ * @LastEditTime: 2021-08-02 20:25:25
  * @FilePath: \supermall\mushroom_mall\src\views\home\home.vue
 -->
 @<template>
@@ -16,8 +16,8 @@
 
     <scroll class="content" ref="scroll" 
             :probeType='3' 
-            @scroll="contenScroll"
             :pull-up-load="true"          
+            @scroll="contenScroll"
             @pullingUp='loadMoer'>    
       <home-swiper :banner="banner" @swiperImageLoad="swiperImageLoad"/>
       <rencommend-views :recommend="recommend"></rencommend-views>
@@ -49,7 +49,9 @@ import {getHomeMultidata,getHomeGoods} from 'network/home.js'
 import scroll from 'components/common/scroll/scroll.vue'
 import BackTop from 'components/content/backTop/BackTop.vue'
 
-import {debounce} from 'components/common/tools/tools.js'
+//导入混入的代码
+import {itemListenerMixin} from 'common/mixin.js'
+
 
 
 export default {
@@ -77,7 +79,8 @@ export default {
       isShowBackTop : false,
       tabOffsetTop: 0,
       isTabFixed: false,
-      saveY: 0
+      saveY: 0,
+      itemListener: null
 
     }
   },
@@ -90,12 +93,13 @@ export default {
     this.getHomeGoods('new')
     this.getHomeGoods('sell')    
   },
+  mixins: [itemListenerMixin], //混入mixin
   mounted() {
     // 监听图片加载完成 刷新解决better-scroll中得BUG
-    const refresh = debounce(this.$refs.scroll.refresh,50)
-    this.$bus.$on('itemImageLoad',() => {
-        refresh()
-    }) 
+    // const refresh = debounce(this.$refs.scroll.refresh,50)
+    // this.$bus.$on('itemImageLoad',() => {
+    //     refresh()
+    // }) 
   },
   computed: {
 
@@ -111,12 +115,14 @@ export default {
   deactivated() {
     //让Home保持状态 离开时 记录一下scroll.y的位置
     this.saveY = this.$refs.scroll.getScrollY()
+
+    //取消全局事件的监听 以防在别处使用会影响到当下组件
+    this.$bus.$off('itemImageLoad',this.itemListener)
   },  
   methods: {   
     /**
      * 事件监听的相关方法
-     */
-    
+     */   
     tabClick(index) {
       switch (index) {
         case 0:
