@@ -1,11 +1,10 @@
 <!--
  * @author: 陈大帅
  * @Date: 2021-07-06 19:42:42
- * @LastEditTime: 2021-07-28 15:34:15
+ * @LastEditTime: 2021-08-07 02:56:39
  * @FilePath: \supermall\mushroom_mall\src\views\category\category.vue
 -->
 @<template>
-  <div>
   <div class="wrapper">
     <ul>     
       <li>分类1</li>
@@ -109,7 +108,6 @@
       <li>分类99</li>
       <li>分类100</li>
     </ul>
-  </div>
   <back-top @click.native="BtnClick"></back-top>
   </div>
 </template>

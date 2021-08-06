@@ -1,12 +1,12 @@
 <!--
  * @author: 陈大帅
  * @Date: 2021-07-15 22:45:00
- * @LastEditTime: 2021-08-02 02:36:58
+ * @LastEditTime: 2021-08-07 03:34:20
  * @FilePath: \supermall\mushroom_mall\src\components\content\goods\GoodsListItem.vue
 -->
 @<template>
   <div class="goods-item" @click="itemClick">   
-    <img :src="showImg" alt="" @load="imageLoad">
+    <img v-lazy="showImg" alt="" @load="imageLoad">
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>   
       <span class="price">{{goodsItem.price}}</span>

@@ -1,7 +1,7 @@
 <!--
  * @author: 陈大帅
  * @Date: 2021-07-30 16:29:47
- * @LastEditTime: 2021-08-02 22:00:03
+ * @LastEditTime: 2021-08-03 03:24:33
  * @FilePath: \supermall\mushroom_mall\src\views\detail\childComps\detailNavBar.vue
 -->
 @<template>
@@ -32,7 +32,7 @@ export default {
   },
   data() {
     return {
-      titles: ['商品','参数','评价','推荐'],
+      titles: ['商品','评价','参数','推荐'],
       currentIndex: 0,
       isleftGo: false
     }

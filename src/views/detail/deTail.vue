@@ -1,16 +1,17 @@
 <!--
  * @author: 陈大帅
  * @Date: 2021-07-30 15:59:13
- * @LastEditTime: 2021-08-02 23:08:57
+ * @LastEditTime: 2021-08-07 03:03:04
  * @FilePath: \supermall\mushroom_mall\src\views\detail\deTail.vue
 -->
 @<template>
-  <div id="detail">
-    <detail-nav-bar class="detail-navbar" @navBarClick="navBarClick"></detail-nav-bar>
+  <div id="detail" >
+    <detail-nav-bar class="detail-navbar" @navBarClick="navBarClick" ref="navBar"></detail-nav-bar>
     
-    <scroll class="scroll-wrapper" ref="scroll"
+    <scroll ref="scroll"
             :probeType="3"
-            @scroll="detailScroll">
+            @scroll="detailScroll"
+            class="datail-scroll">
     <detail-swiper :top-images="topImages" ></detail-swiper>
     <detail-base-info :goods="goods"></detail-base-info>
     <detail-shop-info :shop="shop"></detail-shop-info>
@@ -19,6 +20,8 @@
     <detail-param-info :paramInfo="paramInfo" ref="param"></detail-param-info>
     <goods-list :goods="recommends" ref="recommends"></goods-list>
     </scroll>
+
+    <detail-bottom-bar @addToCart="addToCart"></detail-bottom-bar>
     
     <back-top @click.native="backTop" v-show="isShowBackTop"></back-top>
   </div>
@@ -34,6 +37,8 @@ import detailCommentInfo from './childComps/detailCommentInfo.vue'
 import detailGoodsInfo from './childComps/detailGoodsInfo.vue'
 import detailParamInfo from './childComps/detailParamInfo.vue'
 import GoodsList from 'components/content/goods/GoodsList.vue'
+import detailBottomBar from 'views/detail/childComps/detailBottomBar'
+
 import BackTop from 'components/content/backTop/BackTop.vue'
 
 import {getDetail,Goods,Shop,GoodsParam,getRecommend} from 'network/detail.js'
@@ -43,7 +48,8 @@ import {debounce} from 'components/common/tools/tools.js'
 //导入混入的代码
 import {itemListenerMixin} from 'common/mixin.js'
 
-
+//映射vuex中的actions
+import {mapActions} from 'vuex'
 
 
 export default {
@@ -59,6 +65,7 @@ export default {
     detailCommentInfo, 
     GoodsList,
     BackTop,
+    detailBottomBar,
   },
   data() {
     return {
@@ -74,7 +81,8 @@ export default {
       isShowBackTop : false,
       itemListener: null,
       titleTopYs: [],
-      getTitleTopYs: null
+      getTitleTopYs: null,
+      currentIndex: 0,
     }
   },
   created() {
@@ -115,10 +123,10 @@ export default {
     this.getTitleTopYs = debounce(() => {
       this.titleTopYs = []
       this.titleTopYs.push(0)
-      this.titleTopYs.push(this.$refs.param.$el.offsetTop - 49)  
       this.titleTopYs.push(this.$refs.comment.$el.offsetTop - 49)  
+      this.titleTopYs.push(this.$refs.param.$el.offsetTop - 49)  
       this.titleTopYs.push(this.$refs.recommends.$el.offsetTop - 49) 
-      console.log(this.titleTopYs);
+      this.titleTopYs.push(Number.MAX_VALUE)
     },500)
   },
   mixins: [itemListenerMixin],
@@ -134,20 +142,52 @@ export default {
     backTop() {
       this.$refs.scroll.scrollTo(0,0,300)
     },
-
-    //到一定位置不显示backTop按钮
-    detailScroll(position) {
-      this.isShowBackTop = Math.abs(position.y) > 500
-    },
-
     
-    navBarClick(index) {
+    //监听better-sroll 的滚动
+    detailScroll(position) {
+      //到一定位置不显示backTop按钮
+      this.isShowBackTop = Math.abs(position.y) > 500
+           
+      //在详情页滚动一定距离匹配对应的标题
+      let length = this.titleTopYs.length 
+      for(let i = 0; i < length - 1; i++ ) {
+        if(this.currentIndex !== i && (-position.y >= this.titleTopYs[i] && -position.y <= this.titleTopYs[i+1])) {
+          this.currentIndex = i
+          this.$refs.navBar.currentIndex = this.currentIndex
+        }
+      }
+      },
+
+      navBarClick(index) {
     this.$refs.scroll.scrollTo(0,-this.titleTopYs[index],100)
-  }
+      },
+    
+    ...mapActions(['addCart']),
+     addToCart() {
+      //  1.获取收集好购物车展示需要的信息
+       const product = {}
+       product.image = this.topImages[0]
+       product.title = this.goods.title
+       product.desc = this.goods.desc
+       product.price = this.goods.nowPrice
+       product.id = this.id     
+
+       //2.添加购物车商品数据
+          //方法1：
+      this.$store.dispatch('addCart',product).then(res => {       
+        this.$toast.show(res,1500)
+      })  //事件发射给vuex中的 actions
+
+        // 方法2：vuex 的映射
+        // this.addCart(product).then(res => {
+        // console.log(res)
+      //})  //事件发射给vuex中的 actions  
+     }
   },
   mounted() {
     //详情页商品介绍图片的 防抖刷新
-     this.refresh = debounce(this.$refs.scroll.refresh,30)   
+     this.refresh = debounce(this.$refs.scroll.refresh,30) 
+     this.toTitle = debounce(this.then,500)  
   },
   destroyed() {
     //取消全局事件的监听 以防在别处使用会影响到当下组件
@@ -169,7 +209,7 @@ export default {
     background-color: #fff;   
   }
 
-  .scroll-wrapper {
-    height: calc(100% - 44px);
+  .datail-scroll {
+      height: calc(100% - 44px - 58px - 49px);
   }
 </style>

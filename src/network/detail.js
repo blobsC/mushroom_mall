@@ -1,7 +1,7 @@
 /*
  * @author: 陈大帅
  * @Date: 2021-07-30 19:55:45
- * @LastEditTime: 2021-08-02 02:24:41
+ * @LastEditTime: 2021-08-05 02:53:12
  * @FilePath: \supermall\mushroom_mall\src\network\detail.js
  */
 import {request} from './request'
@@ -34,7 +34,7 @@ export class Goods {
     this.discount = itemInfo.discountDesc;
     this.columns = columns;
     this.services = services;
-    this.nowPrice = itemInfo.highNowPrice;
+    this.nowPrice = itemInfo.lowNowPrice;
   }
 }
 

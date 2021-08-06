@@ -1,7 +1,7 @@
 <!--
  * @author: 陈大帅
  * @Date: 2021-07-28 03:31:22
- * @LastEditTime: 2021-08-02 18:42:26
+ * @LastEditTime: 2021-08-07 02:53:16
  * @FilePath: \supermall\mushroom_mall\src\components\common\scroll\scroll.vue
 -->
 @<template>
