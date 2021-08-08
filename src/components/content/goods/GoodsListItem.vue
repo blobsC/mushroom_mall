@@ -1,12 +1,12 @@
 <!--
  * @author: 陈大帅
  * @Date: 2021-07-15 22:45:00
- * @LastEditTime: 2021-08-07 03:34:20
+ * @LastEditTime: 2021-08-09 03:04:29
  * @FilePath: \supermall\mushroom_mall\src\components\content\goods\GoodsListItem.vue
 -->
 @<template>
   <div class="goods-item" @click="itemClick">   
-    <img v-lazy="showImg" alt="" @load="imageLoad">
+    <img v-lazy="showImg" alt="" @load="imageLoad" :key="showImg">
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>   
       <span class="price">{{goodsItem.price}}</span>
@@ -36,9 +36,16 @@ export default {
   },
   computed: {
     showImg() {
-      return this.goodsItem.image ||  this.goodsItem.show.img
+      return this.goodsItem.img || this.goodsItem.image ||  this.goodsItem.show.img
     }
-  }
+  },
+  
+  // mounted: function () {
+  //   console.log(this.goodsItem);
+  //   console.log(this.goodsItem.iid);
+  // }
+    
+ 
 
 }
 

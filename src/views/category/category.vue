@@ -9,7 +9,7 @@
         <div>
           <tab-content-category :subcategories="showSubcategory"></tab-content-category>
           <tab-control :titles="['综合', '新品', '销量']"
-                       @itemClick="tabClick"></tab-control>
+                       @tabClick="tabClick"></tab-control>
           <tab-content-detail :category-detail="showCategoryDetail"></tab-content-detail>
         </div>
       </scroll>
@@ -27,8 +27,8 @@
   import TabContentDetail from './childComps/TabContentDetail'
 
   import {getCategory, getSubcategory, getCategoryDetail} from "network/category.js";
-  import {POP, SELL, NEW} from "@/common/const";
-  import {tabControlMixin} from "@/common/mixin";
+  import {POP, SELL, NEW} from "common/const";
+  import {tabControlMixin} from "common/mixin";
 
   export default {
 		name: "Category",
@@ -40,13 +40,13 @@
       TabContentCategory,
       TabContentDetail
     },
-    mixins: [tabControlMixin],
+    mixins: [tabControlMixin], //引入混入
     data() {
 		  return {
 		    categories: [],
         categoryData: {
         },
-        currentIndex: -1
+        currentIndex: -1,
       }
     },
     created() {
@@ -60,15 +60,30 @@
       },
       showCategoryDetail() {
 		    if (this.currentIndex === -1) return []
-		    return this.categoryData[this.currentIndex].categoryDetail[this.currentType]
+		    return this.categoryData[this.currentIndex].categoryDetail[this.currentType].data
       }
     },
     methods: {
+      itemClick(index) {
+        switch (index) {
+          case 0:
+            this.currentType = 'pop'
+            break;    
+          case 1:
+            this.currentType = 'new'
+            break;
+          case 2:
+            this.currentType = 'sell'
+            break;
+         }
+      },
+
+
 		  _getCategory() {
 		    getCategory().then(res => {
 		      // 1.获取分类数据
 		      this.categories = res.data.data.category.list
-          console.log(res);
+          // console.log(res);
           // 2.初始化每个类别的子数据
           for (let i = 0; i < this.categories.length; i++) {
             this.categoryData[i] = {
@@ -80,6 +95,7 @@
               }
             }
           }
+
           // 3.请求第一个分类的数据
           this._getSubcategories(0)
         })
@@ -94,6 +110,7 @@
           this._getCategoryDetail(SELL)
           this._getCategoryDetail(NEW)
         })
+       
       },
       _getCategoryDetail(type) {
 		    // 1.获取请求的miniWallkey
